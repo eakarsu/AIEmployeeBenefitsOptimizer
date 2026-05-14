@@ -3,11 +3,21 @@ const { EnrollmentRecord } = require('../models');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-// Get all
+// Get all (paginated)
 router.get('/', auth, async (req, res) => {
   try {
-    const records = await EnrollmentRecord.findAll({ order: [['createdAt', 'DESC']] });
-    res.json(records);
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+    const offset = (page - 1) * limit;
+    const { count, rows } = await EnrollmentRecord.findAndCountAll({
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset
+    });
+    res.json({
+      data: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

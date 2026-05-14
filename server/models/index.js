@@ -353,6 +353,16 @@ const AuditLog = sequelize.define('AuditLog', {
   status: { type: DataTypes.STRING, defaultValue: 'success' }
 }, { tableName: 'audit_logs', timestamps: true });
 
+// AI Analysis Model
+const AiAnalysis = sequelize.define('AiAnalysis', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  entity_type: { type: DataTypes.STRING, allowNull: false },
+  entity_id: { type: DataTypes.INTEGER, allowNull: false },
+  analysis_type: { type: DataTypes.STRING, allowNull: false },
+  result_text: { type: DataTypes.TEXT, allowNull: false },
+  user_id: { type: DataTypes.INTEGER }
+}, { tableName: 'ai_analyses', timestamps: true, createdAt: 'created_at', updatedAt: false });
+
 // Compliance Document Model
 const ComplianceDocument = sequelize.define('ComplianceDocument', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -393,5 +403,6 @@ module.exports = {
   ComplianceDocument,
   EmployeeProfile,
   Notification,
-  AuditLog
+  AuditLog,
+  AiAnalysis
 };

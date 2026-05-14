@@ -11,6 +11,8 @@ const costModelsRoutes = require('./routes/costModels');
 const acaComplianceRoutes = require('./routes/acaCompliance');
 const educationRoutes = require('./routes/education');
 const aiRoutes = require('./routes/ai');
+const aiNewRoutes = require('./routes/aiNew');
+const aiAnalysesRoutes = require('./routes/aiAnalyses');
 const claimsRoutes = require('./routes/claims');
 const wellnessRoutes = require('./routes/wellness');
 const dependentsRoutes = require('./routes/dependents');
@@ -42,6 +44,8 @@ app.use('/api/cost-models', costModelsRoutes);
 app.use('/api/aca-compliance', acaComplianceRoutes);
 app.use('/api/education', educationRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/ai', aiNewRoutes);
+app.use('/api/ai-analyses', aiAnalysesRoutes);
 app.use('/api/claims', claimsRoutes);
 app.use('/api/wellness', wellnessRoutes);
 app.use('/api/dependents', dependentsRoutes);
@@ -57,6 +61,13 @@ app.use('/api/notifications', notificationsRoutes);
 app.use('/api/audit-log', auditLogRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/export', dataExportRoutes);
+app.use('/api/agentic-enrollment', require('./routes/agenticEnrollment'));
+app.use('/api/predictive-health-costs', require('./routes/predictiveHealthCosts'));
+app.use('/api/wellness-roi', require('./routes/wellnessRoi'));
+app.use('/api/mental-health-parity', require('./routes/mentalHealthParity'));
+app.use('/api/dependent-aging', require('./routes/dependentAging'));
+app.use('/api/cobra-admin', require('./routes/cobraAdmin'));
+app.use('/api/voluntary-benefits', require('./routes/voluntaryBenefits'));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -78,7 +89,15 @@ async function start() {
     console.log('Database connected successfully');
     await sequelize.sync({ alter: true });
     console.log('Database synced');
-    app.listen(PORT, () => {
+    
+// === Batch 03 Gaps & Frontend Mounts ===
+try {
+  const _batch03 = require('./routes/batch03Gaps');
+  if (typeof authenticateToken === 'function') app.use('/api', authenticateToken, _batch03);
+  else app.use('/api', _batch03);
+} catch (_e) { /* batch03 gap routes optional */ }
+
+app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   } catch (err) {
