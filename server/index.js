@@ -68,6 +68,7 @@ app.use('/api/mental-health-parity', require('./routes/mentalHealthParity'));
 app.use('/api/dependent-aging', require('./routes/dependentAging'));
 app.use('/api/cobra-admin', require('./routes/cobraAdmin'));
 app.use('/api/voluntary-benefits', require('./routes/voluntaryBenefits'));
+app.use('/api/dependent-coverage-gap', require('./routes/dependentCoverageGap'));
 
 // Health check
 app.get('/api/health', (req, res) => {
