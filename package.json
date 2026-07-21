@@ -6,7 +6,8 @@
   "scripts": {
     "start": "bash start.sh",
     "server": "nodemon server/index.js",
-    "client": "cd client && react-scripts start",
+    "client": "cd web && npm start",
+    "test:client": "cd web && npm test",
     "seed": "node server/seed.js"
   },
   "dependencies": {

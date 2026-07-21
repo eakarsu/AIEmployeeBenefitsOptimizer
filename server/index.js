@@ -77,9 +77,9 @@ app.get('/api/health', (req, res) => {
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
+  app.use(express.static(path.join(__dirname, '../web/public')));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    res.sendFile(path.join(__dirname, '../web/public/index.html'));
   });
 }
 
@@ -88,8 +88,12 @@ async function start() {
   try {
     await sequelize.authenticate();
     console.log('Database connected successfully');
-    await sequelize.sync({ alter: true });
-    console.log('Database synced');
+    if (process.env.DB_AUTO_SYNC === 'true') {
+      await sequelize.sync();
+      console.log('Database schema sync completed (DB_AUTO_SYNC=true)');
+    } else {
+      console.log('Database schema sync skipped; run migrations explicitly or set DB_AUTO_SYNC=true for local development');
+    }
     
 // === Batch 03 Gaps & Frontend Mounts ===
 try {
