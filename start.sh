@@ -2,6 +2,11 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+[ -f "$PROJECT_DIR/.env" ] || { echo "ERROR: $PROJECT_DIR/.env is required" >&2; exit 1; }
+set -a
+# shellcheck disable=SC1091
+source "$PROJECT_DIR/.env"
+set +a
 export BACKEND_PORT="${BACKEND_PORT:-4001}"
 export FRONTEND_PORT="${FRONTEND_PORT:-3000}"
 

@@ -357,7 +357,7 @@ const AuditLog = sequelize.define('AuditLog', {
 const AiAnalysis = sequelize.define('AiAnalysis', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   entity_type: { type: DataTypes.STRING, allowNull: false },
-  entity_id: { type: DataTypes.INTEGER, allowNull: false },
+  entity_id: { type: DataTypes.INTEGER, allowNull: true },
   analysis_type: { type: DataTypes.STRING, allowNull: false },
   result_text: { type: DataTypes.TEXT, allowNull: false },
   user_id: { type: DataTypes.INTEGER }
