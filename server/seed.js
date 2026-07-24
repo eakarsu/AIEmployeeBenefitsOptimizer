@@ -3,6 +3,12 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const bcrypt = require('bcryptjs');
 const { sequelize, User, BenefitsPlan, EnrollmentRecord, CostModel, ACACompliance, EmployeeEducation, Claim, WellnessProgram, Dependent, OpenEnrollment, CarrierContact, LifeEvent, FSAHSAAccount, PremiumBilling, BenefitsBenchmark, ComplianceDocument, EmployeeProfile, Notification, AuditLog } = require('./models');
 
+function requireDemoPassword() {
+  const password = process.env.DEMO_PASSWORD || process.env.SEED_DEMO_PASSWORD || process.env.DEMO_SEED_PASSWORD || '';
+  if (password.length < 12 || password.length > 1024) throw new Error('DEMO_PASSWORD must contain 12-1024 characters');
+  return password;
+}
+
 async function seed() {
   try {
     await sequelize.authenticate();
@@ -11,7 +17,7 @@ async function seed() {
     console.log('Tables created');
 
     // Seed Users
-    const hashedPassword = await bcrypt.hash('password123', 10);
+    const hashedPassword = await bcrypt.hash(requireDemoPassword(), 10);
     await User.bulkCreate([
       { email: 'admin@benefitsoptimizer.com', password: hashedPassword, name: 'Sarah Johnson', company: 'TechCorp Inc.', role: 'hr_admin' },
       { email: 'hr@company.com', password: hashedPassword, name: 'Mike Chen', company: 'TechCorp Inc.', role: 'hr_manager' }
@@ -379,7 +385,7 @@ async function seed() {
     console.log('Audit Log seeded (15 items)');
 
     console.log('\n✅ All data seeded successfully!');
-    console.log('Login credentials: admin@benefitsoptimizer.com / password123');
+    console.log('Demo login users provisioned from the local environment.');
     process.exit(0);
   } catch (err) {
     console.error('Seed error:', err);
