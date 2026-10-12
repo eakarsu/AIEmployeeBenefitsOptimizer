@@ -378,10 +378,15 @@ router.post('/cobra-automation', auth, aiRateLimiter, async (req, res) => {
 
     let employee = null;
     if (employee_id) {
-      try { employee = await EmployeeProfile.findByPk(employee_id); } catch (e) {}
+      if (!/^\d+$/.test(String(employee_id)) || Number(employee_id) < 1) {
+        return res.status(400).json({ error: 'employee_id must select an actual saved employee profile.' });
+      }
+      employee = await EmployeeProfile.findByPk(employee_id);
+      if (!employee) return res.status(404).json({ error: 'Employee profile not found.' });
     }
-    const enrollments = employee_id
-      ? await EnrollmentRecord.findAll({ where: { employeeId: String(employee_id) }, limit: 20 })
+    // EnrollmentRecord stores the employee's email, not the profile's ID.
+    const enrollments = employee?.email
+      ? await EnrollmentRecord.findAll({ where: { employeeEmail: employee.email }, limit: 20 })
       : [];
     const dependents = employee && employee.email
       ? await Dependent.findAll({ where: { employeeEmail: employee.email }, limit: 20 })
