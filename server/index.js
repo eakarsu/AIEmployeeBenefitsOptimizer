@@ -61,6 +61,7 @@ app.use('/api/notifications', notificationsRoutes);
 app.use('/api/audit-log', auditLogRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/export', dataExportRoutes);
+app.use('/api/feature-pack', require('./routes/featurePack').default);
 app.use('/api/agentic-enrollment', require('./routes/agenticEnrollment'));
 app.use('/api/predictive-health-costs', require('./routes/predictiveHealthCosts'));
 app.use('/api/wellness-roi', require('./routes/wellnessRoi'));
